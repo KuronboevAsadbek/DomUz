@@ -1,0 +1,16 @@
+server:
+  port: 3030
+
+spring:
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        show_format: true
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:postgresql://localhost:5432/electr-db
+    username: electr
+    password: 1
+
