@@ -51,5 +51,6 @@ public class AccountController {
     public ResponseEntity<?> getByAccountName(@RequestParam String accountName){
         return ResponseEntity.ok(accountService.findByAccountName(accountName));
     }
+
 }
 

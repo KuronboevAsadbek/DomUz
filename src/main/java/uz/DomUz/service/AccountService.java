@@ -20,7 +20,7 @@ public interface AccountService {
 
     List<FindByPassportDto> findByPassportNumber(String passportNumber);
 
-    //find by accountname
     Account findByAccountName(String accountName);
+
 
 }

@@ -2,6 +2,7 @@ package uz.DomUz.service.imp;
 
 import org.springframework.stereotype.Service;
 import uz.DomUz.dto.FindByPassportDto;
+import uz.DomUz.exception.NotFoundException;
 import uz.DomUz.model.Account;
 import uz.DomUz.repository.AccountRepository;
 import uz.DomUz.service.AccountService;
@@ -20,19 +21,26 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public Account save(Account account) {
-        double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment())/100;
+
+        double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment()) / 100;
         account.setAfterPayAmount(String.valueOf(percent));
         return accountRepository.save(account);
     }
 
     @Override
     public void delete(Long id) {
-        accountRepository.deleteById(id);
+        try {
+            accountRepository.deleteById(id);
 
+
+        } catch (Exception e) {
+            throw new NotFoundException("Account not found");
+        }
     }
 
     @Override
     public Account update(Account account) {
+
         Account account1 = accountRepository.findById(account.getId()).get();
         if (account.getAddress() != null) {
             account1.setAddress(account.getAddress());
@@ -85,7 +93,7 @@ public class AccountServiceImp implements AccountService {
         if (account.getMarriage() != null) {
             account1.setMarriage(account.getMarriage());
         }
-        if (account.getHousing().getId()!=null){
+        if (account.getHousing().getId() != null) {
             account1.setHousing(account.getHousing());
         }
         return accountRepository.save(account1);
@@ -93,7 +101,11 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public Account getOne(Long id) {
-        return accountRepository.findById(id).get();
+        if (accountRepository.findById(id).isPresent()) {
+            return accountRepository.findById(id).get();
+        } else {
+            throw new NotFoundException("Account not found");
+        }
     }
 
     @Override
@@ -104,7 +116,7 @@ public class AccountServiceImp implements AccountService {
     @Override
     public List<FindByPassportDto> findByPassportNumber(String passportNumber) {
         List<Account> accounts = accountRepository.findByPassportNumber(passportNumber);
-           List<FindByPassportDto> findByPassportDtos = new ArrayList<>();
+        List<FindByPassportDto> findByPassportDtos = new ArrayList<>();
         for (Account account : accounts) {
             FindByPassportDto findByPassportDto = new FindByPassportDto();
             findByPassportDto.setId(account.getId());
