@@ -15,6 +15,10 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findAccountByName(String accountName);
 
+    @Query(value = "select name from account where name like %:name%", nativeQuery = true)
+    public List<String> search(String name);
+
+
 
 
 }

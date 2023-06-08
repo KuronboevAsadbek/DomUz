@@ -18,21 +18,19 @@ public class AccountServiceImp implements AccountService {
         this.accountRepository = accountRepository;
     }
 
-
     @Override
     public Account save(Account account) {
-
-        double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment()) / 100;
-        account.setAfterPayAmount(String.valueOf(percent));
-        return accountRepository.save(account);
+                double costOne2 = Double.parseDouble(account.getCostOneSquare()) * Double.parseDouble(account.getSquare());
+                account.setTotalAmount(String.valueOf(costOne2));
+                double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment()) / 100;
+                account.setAfterPayAmount(String.valueOf(percent));
+                return accountRepository.save(account);
     }
 
     @Override
     public void delete(Long id) {
         try {
             accountRepository.deleteById(id);
-
-
         } catch (Exception e) {
             throw new NotFoundException("Account not found");
         }
@@ -41,7 +39,8 @@ public class AccountServiceImp implements AccountService {
     @Override
     public Account update(Account account) {
 
-        Account account1 = accountRepository.findById(account.getId()).get();
+        if (accountRepository.findById(account.getId()).isPresent()){
+            Account account1 = accountRepository.findById(account.getId()).get();
         if (account.getAddress() != null) {
             account1.setAddress(account.getAddress());
         }
@@ -97,6 +96,9 @@ public class AccountServiceImp implements AccountService {
             account1.setHousing(account.getHousing());
         }
         return accountRepository.save(account1);
+    }else {
+            throw new NotFoundException("Account not found");
+        }
     }
 
     @Override
@@ -131,7 +133,17 @@ public class AccountServiceImp implements AccountService {
 
     @Override
     public Account findByAccountName(String accountName) {
-        return accountRepository.findAccountByName(accountName);
-    }
+        if (accountRepository.findAccountByName(accountName) != null) {
+            return accountRepository.findAccountByName(accountName);
+        } else {
+            throw new NotFoundException("Account not found");
+        }
 
+    }
+    public List<String> search(String name){
+        if (accountRepository.search(name).isEmpty()){
+            throw new NotFoundException("Not Found");
+        }else
+            return accountRepository.search(name);
+    }
 }

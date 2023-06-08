@@ -22,5 +22,7 @@ public interface AccountService {
 
     Account findByAccountName(String accountName);
 
+    List<String> search(String name);
+
 
 }

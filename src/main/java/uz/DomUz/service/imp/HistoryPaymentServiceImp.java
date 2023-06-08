@@ -1,6 +1,7 @@
 package uz.DomUz.service.imp;
 
 import org.springframework.stereotype.Service;
+import uz.DomUz.exception.NotFoundException;
 import uz.DomUz.model.HistoryPayment;
 import uz.DomUz.repository.HistoryPaymentRepository;
 import uz.DomUz.service.HistoryPaymentService;
@@ -28,7 +29,11 @@ public class HistoryPaymentServiceImp implements HistoryPaymentService {
 
     @Override
     public void delete(Long id) {
-        historyPaymentRepository.deleteById(id);
+        try {
+            historyPaymentRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new NotFoundException("History Not Found");
+        }
     }
 
     @Override
@@ -50,10 +55,11 @@ public class HistoryPaymentServiceImp implements HistoryPaymentService {
     public String sumAllHistoryPaymentByAccountId(Long id) {
         List<HistoryPayment> historyPaymentList = historyPaymentRepository.findAll();
         double sum = 0;
+
         for (HistoryPayment historyPayment : historyPaymentList) {
-            if (historyPayment.getAccount().getId() == id) {
+            if (historyPayment.getAccount().getId().equals(id)) {
                 sum += Double.parseDouble(historyPayment.getPayment());
-            }else System.out.println("Account not found");
+            }
         }
         return String.valueOf(sum);
     }
