@@ -15,7 +15,7 @@ public class HousingController {
     }
 
     @PostMapping("/addhousing")
-    public ResponseEntity<?> addHousing(@RequestBody Housing housing){
+    public ResponseEntity<Housing> addHousing(@RequestBody Housing housing){
         return ResponseEntity.ok(housingService.addHousing(housing));
     }
 
