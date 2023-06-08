@@ -1,6 +1,7 @@
 package uz.DomUz.service.imp;
 
 import org.springframework.stereotype.Service;
+import uz.DomUz.exception.NotFoundException;
 import uz.DomUz.model.Housing;
 import uz.DomUz.repository.HousingRepository;
 import uz.DomUz.service.HousingService;
@@ -18,27 +19,34 @@ public class HousingServiceImp implements HousingService {
 
     @Override
     public Housing addHousing(Housing housing) {
-    return housingRepository.save(housing);
+        return housingRepository.save(housing);
     }
 
     @Override
     public Housing getHousing(Long id) {
-        return housingRepository.findById(id).get();
+        return housingRepository.findById(id).orElseThrow(() -> new NotFoundException("House Not found"));
     }
 
     @Override
     public void delete(Long id) {
-        housingRepository.deleteById(id);
+        try {
+            housingRepository.deleteById(id);
+
+        } catch (Exception e) {
+            throw new NotFoundException("House Not found");
+        }
     }
 
     @Override
     public Housing update(Housing housing) {
-        housingRepository.findById(housing.getId()).get();
+        if (housing.getId() == null) {
+            throw new NotFoundException("House Not found");
+        }
         return housingRepository.save(housing);
     }
 
     @Override
     public List<Housing> getAllHousing() {
-        return housingRepository.findAll();
+        return housingRepository.findAll(); //find all never return exception
     }
 }

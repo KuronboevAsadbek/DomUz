@@ -59,6 +59,9 @@ public class Account  implements Serializable {
     @Column(name = "cost_one_square")
     private String costOneSquare;
 
+    @Column(name = "square")
+    private String square;
+
     @Column(name = "total_amount")
     private String totalAmount;
 

@@ -1,6 +1,8 @@
 package uz.DomUz.service.imp;
 
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
+import uz.DomUz.exception.NotFoundException;
 import uz.DomUz.model.HistoryPayment;
 import uz.DomUz.repository.HistoryPaymentRepository;
 import uz.DomUz.service.HistoryPaymentService;
@@ -28,33 +30,27 @@ public class HistoryPaymentServiceImp implements HistoryPaymentService {
 
     @Override
     public void delete(Long id) {
-        historyPaymentRepository.deleteById(id);
+        try {
+            historyPaymentRepository.deleteById(id);
+        } catch (Exception e) {
+            throw new NotFoundException("History Not Found");
+        }
     }
 
     @Override
     public HistoryPayment update(HistoryPayment historyPayment) {
-        HistoryPayment historyPayment1 = historyPaymentRepository.findById(historyPayment.getId()).get();
-        if (historyPayment.getPayment() != null) {
-            historyPayment1.setPayment(historyPayment.getPayment());
+        if (ObjectUtils.isEmpty(historyPayment.getId())) {
+            throw new NotFoundException("History Not Found");
         }
-        if (historyPayment.getDate() != null) {
-            historyPayment1.setDate(historyPayment.getDate());
-        }
-        if (historyPayment.getDescription() != null) {
-            historyPayment1.setDescription(historyPayment.getDescription());
-        }
-        return historyPaymentRepository.save(historyPayment1);
+        return historyPaymentRepository.save(historyPayment);
     }
 
     @Override
     public String sumAllHistoryPaymentByAccountId(Long id) {
-        List<HistoryPayment> historyPaymentList = historyPaymentRepository.findAll();
-        double sum = 0;
-        for (HistoryPayment historyPayment : historyPaymentList) {
-            if (historyPayment.getAccount().getId() == id) {
-                sum += Double.parseDouble(historyPayment.getPayment());
-            }else System.out.println("Account not found");
-        }
+        double sum = historyPaymentRepository.findAll().stream()
+                .filter(historyPayment -> historyPayment.getAccount().getId().equals(id))
+                .mapToDouble(historyPayment -> Double.parseDouble(historyPayment.getPayment()))
+                .sum();
         return String.valueOf(sum);
     }
 }

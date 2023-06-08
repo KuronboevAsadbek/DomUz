@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import uz.DomUz.model.Account;
 import uz.DomUz.service.AccountService;
 
+import java.util.Locale;
+
 @RequestMapping("/api")
 @RestController
 public class AccountController {
@@ -26,7 +28,7 @@ public class AccountController {
 
     }
 
-    @DeleteMapping("/deleteacc/{id}")
+    @DeleteMapping("/deleteacc/{id}") // this method not work (Reason: Account is linked with history table)
     public ResponseEntity<?> delete(@PathVariable Long id){
         accountService.delete(id);
         return ResponseEntity.ok("Deleted");
@@ -50,6 +52,11 @@ public class AccountController {
     @GetMapping("/getbyaccountname")
     public ResponseEntity<?> getByAccountName(@RequestParam String accountName){
         return ResponseEntity.ok(accountService.findByAccountName(accountName));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<?> search(@RequestParam String name){
+        return ResponseEntity.ok(accountService.search(name.toLowerCase(Locale.ROOT)));
     }
 
 }
