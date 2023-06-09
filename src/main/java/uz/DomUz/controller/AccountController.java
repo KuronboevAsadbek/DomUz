@@ -6,6 +6,7 @@ import uz.DomUz.exception.BadRequestException;
 import uz.DomUz.model.Account;
 import uz.DomUz.service.AccountService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
 
 @RequestMapping("/api")
@@ -19,8 +20,8 @@ public class AccountController {
     }
 
     @PostMapping("/createacc")
-    public ResponseEntity<?> create(@RequestBody Account account) throws BadRequestException {
-    return ResponseEntity.ok(accountService.save(account));
+    public ResponseEntity<?> create(@RequestBody Account account, HttpServletRequest httpServletRequest) throws BadRequestException {
+    return ResponseEntity.ok(accountService.save(account, httpServletRequest));
     }
 
     @GetMapping("/getone/{id}")
@@ -41,13 +42,13 @@ public class AccountController {
     }
 
     @PutMapping("/updateacc")
-    public ResponseEntity<?> update(@RequestBody Account account){
-        return ResponseEntity.ok(accountService.update(account));
+    public ResponseEntity<?> update(@RequestBody Account account, HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(accountService.update(account, httpServletRequest));
     }
 
     @GetMapping("/search")
-    public ResponseEntity<?> search(@RequestParam String name){
-        return ResponseEntity.ok(accountService.search(name));
+    public ResponseEntity<?> search(@RequestParam String name, HttpServletRequest httpServletRequest){
+        return ResponseEntity.ok(accountService.search(name, httpServletRequest));
     }
 
 }

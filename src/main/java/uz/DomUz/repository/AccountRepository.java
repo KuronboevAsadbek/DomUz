@@ -17,7 +17,7 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     Account findByDealNumber(String accountName);
 
-    @Query(value = "select name from account where name. like %:name%", nativeQuery = true)
+    @Query(value = "SELECT name FROM account WHERE LOWER(name) LIKE '%' || LOWER(:name) || '%'", nativeQuery = true)
     public List<String> search(String name);
 
 }
