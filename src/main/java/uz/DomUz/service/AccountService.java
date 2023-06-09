@@ -1,6 +1,7 @@
 package uz.DomUz.service;
 
 import uz.DomUz.dto.FindByPassportDto;
+import uz.DomUz.exception.BadRequestException;
 import uz.DomUz.model.Account;
 
 import java.util.List;
@@ -8,7 +9,7 @@ import java.util.List;
 public interface AccountService {
     //
 
-    Account save(Account account);
+    Account save(Account account) throws BadRequestException;
 
     void delete(Long id);
 
@@ -20,7 +21,6 @@ public interface AccountService {
 
     List<FindByPassportDto> findByPassportNumber(String passportNumber);
 
-    Account findByAccountName(String accountName);
 
     List<String> search(String name);
 

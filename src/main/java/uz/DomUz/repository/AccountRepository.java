@@ -13,12 +13,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     //
     List<Account> findByPassportNumber(String passportNumber);
 
-    Account findAccountByName(String accountName);
+    Boolean existsByDealNumber(String dealNumber);
 
-    @Query(value = "select name from account where name like %:name%", nativeQuery = true)
+    Account findByDealNumber(String accountName);
+
+    @Query(value = "select name from account where name. like %:name%", nativeQuery = true)
     public List<String> search(String name);
-
-
-
 
 }

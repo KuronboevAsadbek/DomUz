@@ -3,6 +3,7 @@ package uz.DomUz.service.imp;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import uz.DomUz.dto.FindByPassportDto;
+import uz.DomUz.exception.BadRequestException;
 import uz.DomUz.exception.NotFoundException;
 import uz.DomUz.model.Account;
 import uz.DomUz.repository.AccountRepository;
@@ -21,12 +22,15 @@ public class AccountServiceImp implements AccountService {
 
 
     @Override
-    public Account save(Account account) {
-        double costOne2 = Double.parseDouble(account.getCostOneSquare()) * Double.parseDouble(account.getSquare());
-        account.setTotalAmount(String.valueOf(costOne2));
-        double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment()) / 100;
-        account.setAfterPayAmount(String.valueOf(percent));
-        return accountRepository.save(account);
+    public Account save(Account account) throws BadRequestException {
+        if (!accountRepository.existsByDealNumber(account.getDealNumber())) {
+            double costOne2 = Double.parseDouble(account.getCostOneSquare()) * Double.parseDouble(account.getSquare());
+            account.setTotalAmount(String.valueOf(costOne2));
+            double percent = Double.parseDouble(account.getTotalAmount()) * Double.parseDouble(account.getInitialPayment()) / 100;
+            account.setAfterPayAmount(String.valueOf(percent));
+            return accountRepository.save(account);
+        }
+        else throw new BadRequestException("Deal Number Is Already Crated!");
     }
 
     @Override
@@ -73,15 +77,6 @@ public class AccountServiceImp implements AccountService {
 
     }
 
-    @Override
-    public Account findByAccountName(String accountName) {
-        if (accountRepository.findAccountByName(accountName) != null) {
-            return accountRepository.findAccountByName(accountName);
-        } else {
-            throw new NotFoundException("Account not found");
-        }
-
-    }
 
     public List<String> search(String name) {
         List<String> list = accountRepository.search(name);
